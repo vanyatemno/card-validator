@@ -284,9 +284,3 @@ The Swagger interface provides:
 - Request/response schemas
 - Example payloads
 - Error code documentation
-
-### Response Status Codes
-
-- **200 OK**: Card validation successful
-- **400 Bad Request**: Invalid input or validation failure
-- **500 Internal Server Error**: Server-side error
