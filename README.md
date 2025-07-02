@@ -194,7 +194,7 @@ private validateCardNumber({ cardNumber }: CardValidationRequestDto): void {
 
 The **Luhn Algorithm** works by:
 1. Starting from the rightmost digit, double every second digit
-2. If doubling results in a number > 9, subtract 9 (or add the digits)
+2. If doubling results in a number > 9, add the digits
 3. Sum all digits
 4. If the total sum is divisible by 10, the card number is valid
 
