@@ -1,0 +1,29 @@
+# Stage 1: Build the application
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci --include=dev
+
+COPY . .
+RUN npm run build
+
+# Stage 2: Create the production image
+FROM node:24-alpine AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/test ./test
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/tsconfig.build.json ./tsconfig.build.json
+
+#ENV NODE_ENV production
+
+EXPOSE 3000
+
+CMD ["node", "dist/main.js"]
