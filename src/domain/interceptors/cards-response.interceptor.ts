@@ -5,7 +5,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { CardValidationException } from '../exception';
 import { Response } from 'express';
@@ -30,8 +30,6 @@ export class CardsResponseInterceptor implements NestInterceptor {
         const response = context.switchToHttp().getResponse<Response>();
 
         if (error instanceof CardValidationException) {
-          const response = context.switchToHttp().getResponse<Response>();
-
           response.status(400).json({
             valid: false,
             error: {
@@ -39,8 +37,6 @@ export class CardsResponseInterceptor implements NestInterceptor {
               message: error.message,
             },
           });
-
-          return EMPTY;
         } else if (error instanceof BadRequestException) {
           response.status(400).json({
             valid: false,
@@ -49,7 +45,6 @@ export class CardsResponseInterceptor implements NestInterceptor {
               message: (error.getResponse()['message'] as string[]).join(';'),
             },
           });
-          return EMPTY;
         } else {
           response.status(500).json({
             valid: false,
@@ -58,9 +53,9 @@ export class CardsResponseInterceptor implements NestInterceptor {
               message: 'Internal Server Error',
             },
           });
-
-          return EMPTY;
         }
+
+        return of(null);
       }),
     );
   }

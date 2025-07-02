@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import { CardsValidatorService } from '../../domain/services/cards.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CardValidationRequestDto } from '../dtos';
+import {
+  CardValidationRequestDto,
+  CardValidationSuccessResponseDto,
+  CardValidationErrorResponseDto
+} from '../dtos';
 import { CardsResponseInterceptor } from '../../domain/interceptors';
 
 @ApiTags('Cards')
@@ -19,23 +23,19 @@ export class CardsController {
   @ApiOperation({ summary: 'Validates a card' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a result of card validation',
-    type: CardValidationRequestDto,
+    description: 'Card validation successful',
+    type: CardValidationSuccessResponseDto,
   })
-  @ApiQuery({
-    name: 'cardNumber',
-    type: String,
-    required: true,
+  @ApiResponse({
+    status: 400,
+    description:
+      'Card validation failed due to invalid input or validation errors',
+    type: CardValidationErrorResponseDto,
   })
-  @ApiQuery({
-    name: 'expiryYear',
-    type: String,
-    required: true,
-  })
-  @ApiQuery({
-    name: 'expiryMonth',
-    type: String,
-    required: true,
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: CardValidationErrorResponseDto,
   })
   @Header('content-type', 'application/json')
   @UseInterceptors(CardsResponseInterceptor)

@@ -4,6 +4,8 @@ import { CardValidationException } from '../exception';
 
 @Injectable()
 export class CardsValidatorService {
+  private permittedCardNumberLength = [13, 15, 16];
+
   /**
    * Validates card data including number, length, and expiry date
    * @param cardDto - Card validation request data
@@ -42,7 +44,7 @@ export class CardsValidatorService {
   private validateCardNumberLength({
     cardNumber,
   }: CardValidationRequestDto): void {
-    if (![13, 15, 16].includes(cardNumber.length)) {
+    if (this.permittedCardNumberLength.includes(cardNumber.length)) {
       throw new CardValidationException('Wrong card number length');
     }
   }

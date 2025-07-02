@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerInterceptor } from '../../domain/interceptors';
+import { LoggerService } from '../../domain/services/common';
 import { CardsModule } from '../../domain/modules';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from '../config/config'
@@ -15,6 +16,7 @@ import appConfig from '../config/config'
   ],
   controllers: [],
   providers: [
+    LoggerService,
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggerInterceptor,

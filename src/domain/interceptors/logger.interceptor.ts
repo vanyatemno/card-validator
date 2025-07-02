@@ -1,34 +1,32 @@
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
+import { LoggerService } from '../services/common';
 
+@Injectable()
 export class LoggerInterceptor implements NestInterceptor {
+  constructor(private readonly loggerService: LoggerService) {}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const requestType = context.getType();
-    const time = Date.now();
+    const contextType = context.getType();
+    const startTime = Date.now();
 
-    if (requestType === 'http') {
-      return next.handle().pipe(
-        tap(
-          () => this.logHttpRequest(context, time),
-          (error: Error) => {
-            console.error(error);
-          },
-        ),
-      );
-    } else {
-      return next.handle();
-    }
-  }
-
-  private logHttpRequest(context: ExecutionContext, startTime: number) {
-    if (context.getType() !== 'http') return;
-
-    // todo: add log of controller and handler name
-
-    const req = context.switchToHttp().getRequest<Request>();
-    // const res = context.switchToHttp().getResponse<Response>();
-    const executionTime = Date.now() - startTime;
-
-    console.log(`[HTTP] ${req.method} ${req.url} : ${executionTime}ms`);
+    return next.handle().pipe(
+      tap(
+        () => {
+          if (contextType === 'http') {
+            const responseTime = Date.now() - startTime;
+            this.loggerService.logHttpRequest(context, responseTime);
+          }
+        },
+        (error: Error) => {
+          this.loggerService.logError(error);
+        },
+      ),
+    );
   }
 }
