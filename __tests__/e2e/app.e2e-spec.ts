@@ -76,7 +76,7 @@ describe('Application (e2e)', () => {
     it('should have proper dependency injection setup', async () => {
       const response = await request(app.getHttpServer())
         .get(
-          '/cards/validate?cardNumber=4111111111111111&expiryYear=2025&expiryMonth=12',
+          `/cards/validate?cardNumber=4111111111111111&expiryYear=${new Date().getFullYear() + 1}&expiryMonth=12`,
         )
         .expect(200);
 
