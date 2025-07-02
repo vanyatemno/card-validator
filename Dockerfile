@@ -3,8 +3,8 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --include=dev
+COPY package*.json ./
+RUN npm ci
 
 COPY . .
 RUN npm run build
@@ -22,8 +22,8 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/tsconfig.build.json ./tsconfig.build.json
 
-#ENV NODE_ENV production
+ENV NODE_ENV production
 
-EXPOSE 3000
+EXPOSE ${PORT}
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

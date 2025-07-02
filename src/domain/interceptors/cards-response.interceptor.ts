@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { EMPTY, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { ValidationException } from '../exception';
+import { CardValidationException } from '../exception';
 import { Response } from 'express';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class CardsResponseInterceptor implements NestInterceptor {
       catchError((error) => {
         const response = context.switchToHttp().getResponse<Response>();
 
-        if (error instanceof ValidationException) {
+        if (error instanceof CardValidationException) {
           const response = context.switchToHttp().getResponse<Response>();
 
           response.status(400).json({
@@ -50,9 +50,17 @@ export class CardsResponseInterceptor implements NestInterceptor {
             },
           });
           return EMPTY;
-        }
+        } else {
+          response.status(500).json({
+            valid: false,
+            error: {
+              code: 500,
+              message: 'Internal Server Error',
+            },
+          });
 
-        throw error;
+          return EMPTY;
+        }
       }),
     );
   }

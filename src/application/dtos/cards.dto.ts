@@ -10,9 +10,11 @@ import {
 import { Transform } from 'class-transformer';
 
 export class CardValidationRequestDto {
-  @IsDefined()
-  @IsString()
-  @MaxLength(16)
+  @IsDefined({ message: 'Card number has to be defined' })
+  @IsString({ message: 'Card number has to be a string' })
+  @MaxLength(16, {
+    message: 'Card number is too long',
+  })
   cardNumber: string;
 
   @IsDefined()
@@ -29,19 +31,4 @@ export class CardValidationRequestDto {
   @Min(1)
   @Max(12)
   expiryMonth: number;
-
-  // todo: decide do i need it
-  // constructor(properties: any = {}) {
-  //   Object.keys(properties).forEach((key: string) => {
-  //     if (allowedProperties.includes(key)) this[key as keyof this] = properties[key];
-  //   });
-  // }
 }
-
-// interface CardValidationResponse {
-//   valid: boolean;
-//   error?: {
-//     code: number;
-//     message: string;
-//   };
-// }

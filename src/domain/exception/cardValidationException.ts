@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class ValidationException extends HttpException {
+export class CardValidationException extends HttpException {
   public readonly message: string;
 
   constructor(message: string) {

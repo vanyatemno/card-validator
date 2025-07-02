@@ -17,7 +17,6 @@ describe('CardsController Integration', () => {
 
     app = module.createNestApplication();
 
-    // Apply global validation pipe to test DTO validation
     app.useGlobalPipes(
       new ValidationPipe({
         transform: true,
@@ -54,7 +53,7 @@ describe('CardsController Integration', () => {
       it('should handle valid card with minimum valid year (1900)', async () => {
         const card = {
           cardNumber: '4111111111111111',
-          expiryYear: 2050, // Future year
+          expiryYear: 2050,
           expiryMonth: 12,
         };
         const queryString = TestDataHelper.createQueryString(card);
@@ -99,7 +98,6 @@ describe('CardsController Integration', () => {
               .get(`/cards/validate?${queryString}`)
               .expect(400);
 
-            // Cards longer than 16 characters are caught by DTO validation
             if (card.cardNumber.length > 16) {
               expect(response.body).toEqual(
                 TestDataHelper.createErrorResponse(
@@ -107,11 +105,10 @@ describe('CardsController Integration', () => {
                 ),
               );
             } else {
-              // Cards with invalid lengths (12, 14) are caught by service validation
               expect(response.body).toEqual(
                 TestDataHelper.createErrorResponse(
                   'Card number must be 13, 15, or 16 digits long',
-                )
+                ),
               );
             }
           });

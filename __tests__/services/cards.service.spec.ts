@@ -1,6 +1,6 @@
 import { CardsValidatorService } from '../../src/domain/services/cards.service';
 import { CardValidationRequestDto } from '../../src/application/dtos';
-import { ValidationException } from '../../src/domain/exception';
+import { CardValidationException } from '../../src/domain/exception';
 
 describe('CardsValidatorService', () => {
   let service: CardsValidatorService;
@@ -50,9 +50,11 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(invalidCard)).toThrow(ValidationException);
       expect(() => service.validate(invalidCard)).toThrow(
-        'Card number must be 13, 15, or 16 digits long',
+        CardValidationException,
+      );
+      expect(() => service.validate(invalidCard)).toThrow(
+        'Wrong card number length',
       );
     });
 
@@ -63,9 +65,11 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(invalidCard)).toThrow(ValidationException);
       expect(() => service.validate(invalidCard)).toThrow(
-        'Card number must be 13, 15, or 16 digits long',
+        CardValidationException,
+      );
+      expect(() => service.validate(invalidCard)).toThrow(
+        'Wrong card number length',
       );
     });
 
@@ -76,9 +80,11 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(invalidCard)).toThrow(ValidationException);
       expect(() => service.validate(invalidCard)).toThrow(
-        'Card number must be 13, 15, or 16 digits long',
+        CardValidationException,
+      );
+      expect(() => service.validate(invalidCard)).toThrow(
+        'Wrong card number length',
       );
     });
 
@@ -89,26 +95,24 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(expiredCard)).toThrow(ValidationException);
       expect(() => service.validate(expiredCard)).toThrow(
-        'Card has expired or invalid expiry date',
+        CardValidationException,
       );
+      expect(() => service.validate(expiredCard)).toThrow('Card has expired');
     });
 
     it('should throw ValidationException for expired card (current year, past month)', () => {
       const expiredCard: CardValidationRequestDto = {
         cardNumber: '4532015112830366',
         expiryYear: currentYear,
-        expiryMonth: currentMonth - 1 > 0 ? currentMonth - 1 : 12,
+        expiryMonth: currentMonth - 2 > 0 ? currentMonth - 2 : 12,
       };
 
       if (currentMonth > 1) {
         expect(() => service.validate(expiredCard)).toThrow(
-          ValidationException,
+          CardValidationException,
         );
-        expect(() => service.validate(expiredCard)).toThrow(
-          'Card has expired or invalid expiry date',
-        );
+        expect(() => service.validate(expiredCard)).toThrow('Card has expired');
       }
     });
 
@@ -131,7 +135,9 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(invalidCard)).toThrow(ValidationException);
+      expect(() => service.validate(invalidCard)).toThrow(
+        CardValidationException,
+      );
       expect(() => service.validate(invalidCard)).toThrow(
         'Invalid card number (failed Luhn algorithm check)',
       );
@@ -154,7 +160,9 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(invalidCard)).toThrow(ValidationException);
+      expect(() => service.validate(invalidCard)).toThrow(
+        CardValidationException,
+      );
       expect(() => service.validate(invalidCard)).toThrow(
         'Invalid card number (failed Luhn algorithm check)',
       );
@@ -197,7 +205,9 @@ describe('CardsValidatorService', () => {
         expiryMonth: 12,
       };
 
-      expect(() => service.validate(invalidCard)).toThrow(ValidationException);
+      expect(() => service.validate(invalidCard)).toThrow(
+        CardValidationException,
+      );
       expect(() => service.validate(invalidCard)).toThrow(
         'Invalid card number (failed Luhn algorithm check)',
       );

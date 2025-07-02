@@ -1,1 +1,1 @@
-export { ValidationException } from './validation.exception';
+export { CardValidationException } from './cardValidationException';
