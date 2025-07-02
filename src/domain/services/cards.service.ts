@@ -41,10 +41,8 @@ export class CardsValidatorService {
    * @param cardDto - Card validation request data
    * @throws CardValidationException if length is invalid
    */
-  private validateCardNumberLength({
-    cardNumber,
-  }: CardValidationRequestDto): void {
-    if (this.permittedCardNumberLength.includes(cardNumber.length)) {
+  private validateCardNumberLength({ cardNumber }: CardValidationRequestDto) {
+    if (!this.permittedCardNumberLength.includes(cardNumber.length)) {
       throw new CardValidationException('Wrong card number length');
     }
   }

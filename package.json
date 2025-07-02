@@ -18,10 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:unit": "jest --testPathPattern=__tests__/services",
-    "test:integration": "jest --testPathPattern=__tests__/integration",
-    "test:e2e": "jest --config __tests__/jest-e2e.json",
-    "test:e2e:new": "jest --testPathPattern=__tests__/e2e",
-    "test:e2e:docker": "docker-compose -f docker-compose.e2e.yaml up --abort-on-container-exit --exit-code-from backend",
+    "test:unit:docker": "docker-compose -f docker-compose.unit.yaml up --build --abort-on-container-exit --exit-code-from backend",
+    "test:e2e": "jest --testPathPattern=__tests__/e2e",
+    "test:e2e:docker": "docker-compose -f docker-compose.e2e.yaml up --build --abort-on-container-exit --exit-code-from backend",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e:new"
   },
   "dependencies": {

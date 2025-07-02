@@ -1,98 +1,105 @@
 # Cards Validator
 
-A NestJS-based banking card validation service that validates credit/debit card numbers using the Luhn algorithm, checks card number length, and validates expiry dates.
+A NestJS-based REST API service for validating banking card information using industry-standard validation algorithms including the Luhn algorithm for card number verification.
 
 ## What This Project Does
 
-This project provides a REST API service for validating banking cards. It performs comprehensive validation including:
-
-- **Card Number Validation**: Uses the Luhn algorithm to verify card number authenticity
-- **Length Validation**: Ensures card numbers are 13, 15, or 16 digits (supporting Visa, Mastercard, American Express)
+This project provides a robust card validation service that validates:
+- **Card Number Format**: Ensures card numbers are 13, 15, or 16 digits long
+- **Card Number Validity**: Uses the Luhn algorithm to verify card number authenticity
 - **Expiry Date Validation**: Checks that the card hasn't expired based on current date
-- **Input Validation**: Validates request parameters using class-validator decorators
 
-The service follows clean architecture principles with clear separation of concerns across domain, application, and infrastructure layers.
+The service exposes a RESTful API endpoint that accepts card details and returns validation results with proper error handling and detailed error messages.
 
 ## Project Structure
 
+The project follows **Clean Architecture** principles with **Domain-Driven Design**, organized into three main layers:
+
 ```
-cards-validator/
-├── src/
-│   ├── application/           # Application layer (controllers, DTOs)
-│   │   ├── controllers/       # Сontrollers
-│   │   │   └── cards.controller.ts
-│   │   └── dtos/             # Data Transfer Objects
-│   │       └── cards.dto.ts
-│   ├── domain/               # Domain layer (business logic)
-│   │   ├── exception/        # Custom exceptions
-│   │   │   └── cardValidationException.ts
-│   │   ├── interceptors/     # Response interceptors
-│   │   │   ├── cards-response.interceptor.ts
-│   │   │   └── logger.interceptor.ts
-│   │   ├── modules/          # Domain modules
-│   │   │   └── cards.module.ts
-│   │   └── services/         # Business logic services
-│   │       ├── cards.service.ts
-│   │       └── common/
-│   │           └── logger.service.ts
-│   ├── infrastructure/       # Infrastructure layer (config, modules)
-│   │   ├── config/          # Configuration files
-│   │   │   └── config.ts
-│   │   └── modules/         # Application modules
-│   │       └── app.module.ts
-│   └── main.ts              # Application entry point
-├── __tests__/               # Test files
-│   ├── e2e/                # End-to-end tests
-│   │   └── app.e2e-spec.ts
-│   └── services/           # Unit tests
-│       └── cards.service.spec.ts
-├── docker-compose.yaml      # Docker Compose configuration
-├── Dockerfile              # Docker container definition
-└── package.json            # Dependencies and scripts
+src/
+├── application/          # Application Layer
+│   ├── controllers/      # REST API controllers
+│   │   └── cards.controller.ts
+│   └── dtos/             # Data Transfer Objects
+│       └── cards.dto.ts
+├── domain/               # Domain Layer (Business Logic)
+│   ├── exception/        # Custom exceptions
+│   │   └── cardValidationException.ts
+│   ├── interceptors/     # Response interceptors
+│   │   ├── cards-response.interceptor.ts
+│   │   └── logger.interceptor.ts
+│   ├── modules/          # Domain modules
+│   │   └── cards.module.ts
+│   └── services/         # Business logic services
+│       ├── cards.service.ts
+│       └── common/
+│           └── logger.service.ts
+├── infrastructure/       # Infrastructure Layer
+│   ├── config/           # Configuration management
+│   │   └── config.ts
+│   └── modules/          # Application modules
+│       └── app.module.ts
+└── main.ts               # Application entry point
+
+__tests__/                # Test suites
+├── e2e/                  # End-to-end tests
+├── services/             # Unit tests
+└── jest-e2e.json         # E2E test configuration
 ```
 
-## Prerequisites
+## Prerequisites and Technologies
+
+### Prerequisites
+- **Node.js**: Version 18+ (recommended: 24+)
+- **npm**: Version 8+ (comes with Node.js)
+- **Docker**: Optional, for containerized deployment
 
 ### Technologies Used
 
-- **Node.js** (v24+)
-- **NestJS** (v11+) - Progressive Node.js framework
-- **TypeScript** - Type-safe JavaScript
-- **Class Validator** - Validation decorators
-- **Class Transformer** - Object transformation
-- **Swagger/OpenAPI** - API documentation
-- **Jest** - Testing framework
-- **Docker** - Containerization
+#### Core Framework
+- **NestJS**: Progressive Node.js framework for building scalable server-side applications
+- **TypeScript**: Strongly typed programming language
+- **Express**: Web application framework (NestJS default)
 
-### System Requirements
+#### Validation & Documentation
+- **class-validator**: Decorator-based validation library
+- **class-transformer**: Object transformation library
+- **Swagger/OpenAPI**: API documentation and testing interface
 
-- Node.js 24 or higher
-- npm or yarn package manager
-- Docker (optional, for containerized deployment)
+#### Testing
+- **Jest**: JavaScript testing framework
+- **Supertest**: HTTP assertion library for testing APIs
+
+#### Development Tools
+- **ESLint**: Code linting and formatting
+- **Prettier**: Code formatting
+- **TypeScript ESLint**: TypeScript-specific linting rules
 
 ## Running the Project
 
 ### Local Development
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+1. **Clone and install dependencies:**
+```bash
+git clone https://github.com/vanyatemno/card-validator.git
+cd cards-validator
+npm install
+```
 
 2. **Set up environment variables:**
-   Create a `.env` file in the root directory:
-   ```env
-   PORT=3000
-   ```
+```bash
+cp .env.example .env
+# Edit .env file and set PORT (default: 3000)
+```
 
 3. **Start development server:**
-   ```bash
-   npm run start:dev
-   ```
+```bash
+npm run start:dev
+```
 
 4. **Access the application:**
-   - API: http://localhost:3000
-   - Swagger Documentation: http://localhost:3000/api
+- API: `http://localhost:3000`
+- Swagger Documentation: `http://localhost:3000/api`
 
 ### Production Build
 
@@ -106,67 +113,48 @@ npm run start:prod
 
 ### Docker Deployment
 
-1. **Using Docker Compose:**
-   ```bash
-   docker-compose up --build
-   ```
+#### Using Docker Compose (Recommended)
+```bash
+# Set up environment file
+cp .env.example .env
+# Edit .env and set PORT value
 
-2. **Using Docker directly:**
-   ```bash
-   # Build the image
-   docker build -t cards-validator .
-
-   # Run the container
-   docker run -p 3000:3000 -e PORT=3000 cards-validator
-   ```
+# Build and run with Docker Compose
+docker-compose up --build
+```
 
 ### Running Tests
 
 ```bash
-# Run all tests
-npm run test:all
-
 # Run unit tests only
 npm run test:unit
 
-# Run integration tests
-npm run test:integration
+# Run unit tests with Docker
+npm run test:unit:docker
 
 # Run e2e tests
-npm run test:e2e:new
+npm run test:e2e
 
 # Run e2e tests with Docker
 npm run test:e2e:docker
-
-# Run tests with coverage
-npm run test:cov
-
-# Run tests in watch mode
-npm run test:watch
 ```
 
 ## Card Validation Analysis
 
 ### How Card Validation Works
 
-The `CardsValidatorService` in `src/domain/services/cards.service.ts` implements a comprehensive card validation system with three main validation steps:
+The card validation process in `src/domain/services/cards.service.ts` implements a multi-step validation approach:
 
-#### 1. Card Number Length Validation (`validateCardNumberLength`)
+#### 1. **Card Number Length Validation**
 ```typescript
 private validateCardNumberLength({ cardNumber }: CardValidationRequestDto): void {
-  if (![13, 15, 16].includes(cardNumber.length)) {
+  if (!this.permittedCardNumberLength.includes(cardNumber.length)) {
     throw new CardValidationException('Wrong card number length');
   }
 }
 ```
-- **Purpose**: Ensures the card number has a valid length
-- **Accepted Lengths**:
-  - 13 digits: Some Visa cards
-  - 15 digits: American Express cards
-  - 16 digits: Most Visa, Mastercard, and other major cards
-- **Validation**: Throws `CardValidationException` if length is invalid
 
-#### 2. Expiry Date Validation (`validateDate`)
+#### 2. **Expiry Date Validation**
 ```typescript
 private validateDate(cardDto: CardValidationRequestDto): void {
   const currentDate = new Date();
@@ -180,14 +168,9 @@ private validateDate(cardDto: CardValidationRequestDto): void {
   }
 }
 ```
-- **Purpose**: Verifies the card hasn't expired
-- **Logic**: 
-  - Cards are valid if expiry year is in the future
-  - For current year, card is valid if expiry month >= current month
-  - Note: `getMonth()` returns 0-11, but input month is 1-12
-- **Validation**: Throws `CardValidationException` if card has expired
+This validates that the card hasn't expired by comparing the expiry year/month with the current date.
 
-#### 3. Luhn Algorithm Validation (`validateCardNumber`)
+#### 3. **Luhn Algorithm Validation**
 ```typescript
 private validateCardNumber({ cardNumber }: CardValidationRequestDto): void {
   const nums = cardNumber.split('').map(Number);
@@ -208,46 +191,78 @@ private validateCardNumber({ cardNumber }: CardValidationRequestDto): void {
   }
 }
 ```
-- **Purpose**: Validates card number authenticity using the Luhn algorithm
-- **Algorithm Steps**:
-  1. Convert card number to array of digits
-  2. Starting from the right, double every second digit (odd indices in 0-based array)
-  3. If doubling results in a number > 9, subtract 9 (equivalent to `(n % 10) + 1`)
-  4. Sum all digits
-  5. If sum is divisible by 10, the card number is valid
-- **Validation**: Throws `CardValidationException` if Luhn check fails
 
-#### Validation Flow
-The `validate` method orchestrates all validations:
-1. **Length Check** → **Date Check** → **Luhn Check**
-2. If all validations pass, returns `true`
-3. If any validation fails, throws `CardValidationException`
+The **Luhn Algorithm** works by:
+1. Starting from the rightmost digit, double every second digit
+2. If doubling results in a number > 9, subtract 9 (or add the digits)
+3. Sum all digits
+4. If the total sum is divisible by 10, the card number is valid
+
+#### 4. **Validation Flow**
+The main `validate()` method orchestrates the validation:
+```typescript
+public validate(cardDto: CardValidationRequestDto): boolean {
+  this.validateCardNumberLength(cardDto);
+  this.validateDate(cardDto);
+  this.validateCardNumber(cardDto);
+  return true;
+}
+```
 
 ## Available Endpoints and DTOs
 
-### Endpoints
+### API Endpoints
 
 #### `GET /cards/validate`
-Validates a credit/debit card using query parameters.
+Validates card information using query parameters.
 
 **Query Parameters:**
-- `cardNumber` (string, required): The card number to validate
-- `expiryYear` (number, required): Card expiry year (e.g., 2025)
-- `expiryMonth` (number, required): Card expiry month (1-12)
+- `cardNumber` (string, required): Card number (max 16 digits)
+- `expiryYear` (number, required): Expiry year (minimum 1900)
+- `expiryMonth` (number, required): Expiry month (1-12)
 
 **Example Request:**
 ```bash
-curl "http://localhost:3000/cards/validate?cardNumber=4111111111111111&expiryYear=2025&expiryMonth=12"
+GET /cards/validate?cardNumber=4111111111111111&expiryYear=2025&expiryMonth=12
 ```
 
-**Success Response (200):**
+### Data Transfer Objects (DTOs)
+
+#### Request DTO
+```typescript
+class CardValidationRequestDto {
+  cardNumber: string;    // Max 16 characters, required
+  expiryYear: number;    // Min 1900, required
+  expiryMonth: number;   // 1-12, required
+}
+```
+
+#### Success Response DTO
+```typescript
+class CardValidationSuccessResponseDto {
+  valid: boolean;        // Always true for successful validation
+}
+```
+
+**Example Success Response:**
 ```json
 {
   "valid": true
 }
 ```
 
-**Error Response (400):**
+#### Error Response DTO
+```typescript
+class CardValidationErrorResponseDto {
+  valid: boolean;        // Always false for failed validation
+  error: {
+    code: number;        // HTTP status code
+    message: string;     // Error description
+  }
+}
+```
+
+**Example Error Response:**
 ```json
 {
   "valid": false,
@@ -258,50 +273,20 @@ curl "http://localhost:3000/cards/validate?cardNumber=4111111111111111&expiryYea
 }
 ```
 
-### DTOs (Data Transfer Objects)
-
-#### `CardValidationRequestDto`
-Located in `src/application/dtos/cards.dto.ts`
-
-```typescript
-export class CardValidationRequestDto {
-  @IsDefined({ message: 'Card number has to be defined' })
-  @IsString({ message: 'Card number has to be a string' })
-  @MaxLength(16, { message: 'Card number is too long' })
-  cardNumber: string;
-
-  @IsDefined()
-  @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
-  @Min(1900)
-  expiryYear: number;
-
-  @IsDefined()
-  @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
-  @Min(1)
-  @Max(12)
-  expiryMonth: number;
-}
-```
-
-**Validation Rules:**
-- `cardNumber`: Required string, max 16 characters
-- `expiryYear`: Required number, minimum 1900, auto-transformed from string
-- `expiryMonth`: Required number, range 1-12, auto-transformed from string
-
 ### API Documentation
 
-The API includes Swagger/OpenAPI documentation available at:
-- **Local**: http://localhost:3000/api
+The project includes comprehensive Swagger/OpenAPI documentation available at:
+- **Local**: `http://localhost:3000/api`
+- **Production**: `https://your-domain.com/api`
 
-### Example Valid Card Numbers for Testing
+The Swagger interface provides:
+- Interactive API testing
+- Request/response schemas
+- Example payloads
+- Error code documentation
 
-- **Visa**: `4111111111111111`, `4532015112830366`
-- **Mastercard**: `5555555555554444`
-- **American Express**: `372449635398432`, `340000005000009`
-- **13-digit Visa**: `4000002000018`
+### Response Status Codes
 
-All test card numbers pass the Luhn algorithm validation and can be used with future expiry dates for testing purposes.
+- **200 OK**: Card validation successful
+- **400 Bad Request**: Invalid input or validation failure
+- **500 Internal Server Error**: Server-side error

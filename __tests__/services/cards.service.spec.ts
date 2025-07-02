@@ -5,7 +5,7 @@ import { CardValidationException } from '../../src/domain/exception';
 describe('CardsValidatorService', () => {
   let service: CardsValidatorService;
 
-  beforeEach(() => {
+  beforeAll(() => {
     service = new CardsValidatorService();
   });
 
