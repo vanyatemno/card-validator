@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CardValidationRequestDto } from '../../application/dtos';
 import { CardValidationException } from '../exception';
-import { ValidatorService } from '../interfaces';
 
 @Injectable()
-export class CardsValidatorService
-  implements ValidatorService<CardValidationRequestDto>
-{
+export class CardsValidatorService {
   private permittedCardNumberLength = [13, 15, 16];
 
   /**
