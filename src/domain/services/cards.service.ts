@@ -53,12 +53,12 @@ export class CardsValidatorService {
    * @throws CardValidationException if Luhn check fails
    */
   private validateCardNumber({ cardNumber }: CardValidationRequestDto): void {
-    const nums = cardNumber.split('').map(Number);
+    const nums = cardNumber.split('').map(Number).reverse();
     const sum = nums.reduce((acc, cur, index) => {
       if (index % 2 === 1) {
         return acc + cur;
       } else if (cur * 2 > 9) {
-        return acc + ((cur * 2) % 10) + 1;
+        return acc + (cur * 2 - 9);
       } else {
         return acc + cur * 2;
       }
