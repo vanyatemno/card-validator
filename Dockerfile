@@ -26,4 +26,4 @@ ENV NODE_ENV production
 
 EXPOSE ${PORT}
 
-CMD ["node", "dist/src/main.js"]
+CMD ["node", "dist/main.js"]
